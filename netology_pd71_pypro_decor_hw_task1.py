@@ -7,13 +7,33 @@
 
 
 import os
+import time
 
 
 def logger(old_function):
-  ...
-
   def new_function(*args, **kwargs):
-    ...
+    def log(log_file_path, message):
+      cur_datetime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+      new_log_row = f'{cur_datetime} {message}'
+
+      with open(log_file_path, 'a') as log_file:
+        log_file.write(f'{new_log_row}\n')
+    
+    log_file_dir_path = os.path.dirname(__file__)
+    log_file_name = 'main.log'
+    log_file_path = os.path.join(log_file_dir_path, log_file_name)
+
+    log_message =\
+      f'Вызвана функция {old_function.__name__} с аргументами {args} {kwargs}.'
+    log(log_file_path, log_message)
+
+    func_result = old_function(*args, **kwargs)
+
+    log_message =\
+      f'Функция {old_function.__name__} вернула {func_result}.'
+    log(log_file_path, log_message)
+
+    return func_result
 
   return new_function
 
